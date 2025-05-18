@@ -23,7 +23,6 @@ Scrivi le 3 risposte su 3 righe distinte, senza numerarle.
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
-        // RIMOSSO OpenAI-Project
       },
       body: JSON.stringify({
         model: "gpt-3.5-turbo",
@@ -38,13 +37,13 @@ Scrivi le 3 risposte su 3 righe distinte, senza numerarle.
     const output = data.choices?.[0]?.message?.content;
 
     if (!output) {
-      return res.status(500).json({ error: 'Empty response from GPT' });
+      return res.status(500).json({ error: 'Empty response from GPT', data });
     }
 
     res.status(200).json({ output });
 
   } catch (err) {
     console.error('GPT error:', err);
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: 'Server error', details: err.message });
   }
 }
