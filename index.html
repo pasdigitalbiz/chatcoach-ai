@@ -1,75 +1,62 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="it">
   <head>
     <meta charset="UTF-8" />
-    <title>Flirt Booster </title>
+    <title>Flirt Booster</title>
     <style>
       body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-family: Arial, sans-serif;
         padding: 2rem;
-        background: linear-gradient(to right, #ffe0ec, #fff4f0);
-        max-width: 480px;
+        background: linear-gradient(to right, #ff9a9e, #fad0c4);
+        max-width: 600px;
         margin: auto;
         color: #333;
       }
-
       h1 {
         text-align: center;
-        color: #ff2d6f;
-        margin-bottom: 1rem;
+        color: #fff;
+        text-shadow: 1px 1px 2px #000;
       }
-
       textarea, select, button {
         width: 100%;
         margin-top: 1rem;
-        padding: 0.8rem;
+        padding: 0.75rem;
         font-size: 1rem;
-        border-radius: 8px;
-        border: 1px solid #ccc;
-      }
-
-      button {
-        background-color: #ff2d6f;
-        color: white;
-        font-weight: bold;
-        cursor: pointer;
-        transition: background 0.3s ease;
+        border-radius: 6px;
         border: none;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       }
-
+      button {
+        background-color: #ff6f91;
+        color: white;
+        cursor: pointer;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+      }
       button:hover {
-        background-color: #e02662;
+        background-color: #ff3e6c;
       }
-
       #output {
         margin-top: 2rem;
         background: #fff;
-        padding: 1.2rem;
-        border-radius: 10px;
-        box-shadow: 0 0 8px rgba(255, 45, 111, 0.2);
+        padding: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
         white-space: pre-wrap;
-        font-size: 1.05rem;
-        line-height: 1.5;
-        color: #444;
+        color: #222;
       }
     </style>
   </head>
   <body>
-    <h1>Flirt Booster 💘</h1>
-
-    <textarea
-      id="inputText"
-      rows="5"
-      placeholder="Inserisci qui la bio o il messaggio del match...">
-    </textarea>
-
+    <h1>ChatCoach AI</h1>
+    <textarea id="inputText" rows="5" placeholder="Inserisci qui la bio o il messaggio del match..."></textarea>
     <select id="tone">
       <option value="Divertente">Divertente</option>
       <option value="Ironico">Ironico</option>
       <option value="Sicuro di sé">Sicuro di sé</option>
       <option value="Romantico">Romantico</option>
     </select>
-
     <select id="language">
       <option value="Italiano">Italiano</option>
       <option value="Inglese">Inglese</option>
@@ -77,11 +64,8 @@
       <option value="Tedesco">Tedesco</option>
       <option value="Spagnolo">Spagnolo</option>
     </select>
-
-    <button onclick="generateResponse()">🎯 Genera Risposte</button>
-
+    <button onclick="generateResponse()">Genera Risposte</button>
     <div id="output"></div>
-
     <script>
       async function generateResponse() {
         const inputText = document.getElementById("inputText").value;
@@ -98,20 +82,16 @@
         try {
           const response = await fetch("/api/generate", {
             method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload)
           });
 
           const data = await response.json();
-          document.getElementById("output").textContent =
-            data.output || "Errore nella risposta.";
+          document.getElementById("output").textContent = data.output || "Errore nella risposta.";
         } catch (error) {
-          document.getElementById("output").textContent =
-            "Errore API: " + error.message;
+          document.getElementById("output").textContent = "Errore API: " + error.message;
         }
       }
     </script>
   </body>
-</html>
+</html> 
