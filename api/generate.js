@@ -13,7 +13,7 @@ export default async function handler(req, res) {
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
-        "OpenAI-Project": "ps_flirt" // se il tuo progetto si chiama "default", altrimenti cambia
+        "OpenAI-Project": "ps_flirt" // 
       },
       body: JSON.stringify({
         model: "gpt-3.5-turbo",
