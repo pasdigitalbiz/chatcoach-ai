@@ -1,13 +1,12 @@
 export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Only POST allowed" });
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Only POST allowed' });
   }
 
-  const { prompt, tone, language } = req.body;
+  const { inputText, tone, language } = req.body;
 
-  if (!prompt || !tone || !language) {
-    return res.status(400).json({ error: "Missing fields in request" });
-  }
+  const prompt = `Agisci come un assistente esperto di app di dating. L'utente ha scritto questo: "${inputText}".
+Scrivi 3 risposte brevi, una per riga, con tono ${tone} e lingua ${language}, da usare su Tinder o Bumble. Devono essere simpatiche, naturali, realistiche e con emoji.`;
 
   try {
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -15,27 +14,26 @@ export default async function handler(req, res) {
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
-        "OpenAI-Project": process.env.OPENAI_PROJECT || "default"
+        "OpenAI-Project": "proj_ZGHbmAMCAkX8qMMpFtYF6cKl"
       },
       body: JSON.stringify({
-        model: "gpt-3.5-turbo",
-        messages: [
-          {
-            role: "user",
-            content: `Agisci come un ragazzo o ragazza esperta di app di dating. Scrivi 3 risposte brevi, naturali e simpatiche con emoji, per Tinder o Bumble. Il tono deve essere "${tone}". Scrivi in "${language}". Questo è il messaggio ricevuto: "${prompt}"`
-          }
-        ],
+        model: "gpt-3.5-turbo-0125",
+        messages: [{ role: "user", content: prompt }],
         max_tokens: 300,
-        temperature: 0.9
+        temperature: 0.85
       }),
     });
 
     const data = await response.json();
 
-    const output = data?.choices?.[0]?.message?.content || "Errore nella risposta GPT.";
-    res.status(200).json({ output });
+    if (data.choices && data.choices[0]?.message?.content) {
+      res.status(200).json({ result: data.choices[0].message.content.trim() });
+    } else {
+      console.error("Errore nella risposta:", data);
+      res.status(500).json({ error: "Errore nella risposta da OpenAI." });
+    }
   } catch (error) {
-    res.status(500).json({ error: "Errore API: " + error.message });
+    console.error("Errore API:", error);
+    res.status(500).json({ error: "Errore nella generazione." });
   }
 }
-
