@@ -1,82 +1,81 @@
 <!DOCTYPE html>
 <html lang="it">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ChatCoach AI</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      padding: 2rem;
-      background: #f9f9f9;
-      max-width: 600px;
-      margin: auto;
-    }
-    h1 {
-      font-size: 24px;
-      margin-bottom: 1rem;
-    }
-    textarea, select, button {
-      width: 100%;
-      margin-top: 1rem;
-      padding: 0.75rem;
-      font-size: 1rem;
-    }
-    #output {
-      margin-top: 2rem;
-      padding: 1rem;
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 0 4px rgba(0,0,0,0.1);
-      white-space: pre-line;
-    }
-  </style>
-</head>
-<body>
-  <h1>ChatCoach AI</h1>
-
-  <textarea id="inputText" rows="5" placeholder="Inserisci qui la bio o il messaggio del match..."></textarea>
-
-  <select id="tone">
-    <option value="divertente">Divertente</option>
-    <option value="sicuro">Sicuro di sé</option>
-    <option value="dolce">Dolce</option>
-    <option value="ironico">Ironico</option>
-  </select>
-
-  <select id="language">
-    <option value="italiano">Italiano</option>
-    <option value="inglese">Inglese</option>
-  </select>
-
-  <button onclick="generateResponse()">Genera Risposte</button>
-
-  <div id="output"></div>
-
-  <script>
-    async function generateResponse() {
-      console.log("Generazione avviata");
-      const inputText = document.getElementById('inputText').value;
-      const tone = document.getElementById('tone').value;
-      const language = document.getElementById('language').value;
-
-      try {
-        const response = await fetch("/api/generate", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ inputText, tone, language })
-        });
-
-        const data = await response.json();
-       console.log("RISPOSTA API:", JSON.stringify(data, null, 2));
-document.getElementById("output").textContent =
-  data.message || data.error || JSON.stringify(data);
-      } catch (error) {
-        document.getElementById("output").textContent = "Errore di rete: " + error.message;
+  <head>
+    <meta charset="UTF-8" />
+    <title>ChatCoach AI</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        max-width: 600px;
+        margin: auto;
+        padding: 2rem;
+        background: #f9f9f9;
       }
-    }
-  </script>
-</body>
+      textarea,
+      select,
+      button {
+        width: 100%;
+        margin-bottom: 1rem;
+        padding: 0.5rem;
+        font-size: 1rem;
+      }
+      #output {
+        background: #fff;
+        padding: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+        white-space: pre-wrap;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>ChatCoach AI</h1>
+
+    <textarea id="inputText" rows="5" placeholder="Scrivi qui la bio o il messaggio del match..."></textarea>
+
+    <select id="tone">
+      <option value="Divertente">Divertente</option>
+      <option value="Ironico">Ironico</option>
+      <option value="Sicuro di sé">Sicuro di sé</option>
+    </select>
+
+    <select id="language">
+      <option value="Italiano">Italiano</option>
+      <option value="Inglese">Inglese</option>
+    </select>
+
+    <button onclick="generateResponse()">Genera Risposte</button>
+
+    <div id="output"> </div>
+
+    <script>
+      async function generateResponse() {
+        const inputText = document.getElementById("inputText").value;
+        const tone = document.getElementById("tone").value;
+        const language = document.getElementById("language").value;
+
+        const prompt = `Agisci come un assistente esperto di app di dating. L'utente ha ricevuto questo messaggio o ha scritto questa bio:\n"${inputText}"\n\nGenera 3 risposte pronte, una per riga, con tono ${tone}, in ${language}. Mantieni i messaggi brevi, simpatici e realistici.`;
+
+        try {
+          const response = await fetch("/api/generate", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              prompt: prompt,
+            }),
+          });
+
+          const data = await response.json();
+          document.getElementById("output").textContent =
+            data.choices?.[0]?.message?.content || "Errore nella risposta.";
+        } catch (error) {
+          document.getElementById("output").textContent =
+            "Errore API: " + error.message;
+        }
+      }
+    </script>
+  </body>
 </html>
+
