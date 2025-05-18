@@ -12,15 +12,16 @@ export default async function handler(req, res) {
 
   const prompt = `
 Agisci come un esperto di comunicazione online e dating moderno.
+
 L'utente ha ricevuto questo messaggio: "${inputText}".
 
 Rispondi al messaggio come se fossi l'utente, in tono ${tone}, nella lingua ${language}.
 
-Genera 3 risposte brevi, brillanti, propositive e realistiche, con un approccio intelligente e sicuro, come farebbe una persona brillante con esperienza nelle app di dating.
+Genera 3 risposte intelligenti, propositive, e con un tocco di personalità. Ogni risposta deve includere una domanda naturale per stimolare la conversazione e incoraggiare una risposta.
 
-Evita cliché, risposte scontate o troppo generiche. Dai personalità e concretezza. Usa emoji solo se migliorano il tono, mai a caso.
+Evita risposte banali, formali o introdotte da simboli tipo trattini, numeri o punti elenco. Scrivi solo il testo puro della risposta, su una riga. Inserisci emoji solo se migliorano davvero il tono.
 
-Ogni risposta va su una riga separata, senza numeri, senza introduzione.`;
+Scrivi solo le 3 risposte, una per riga, senza numerarle.`;
 
   try {
     const openaiRes = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -50,4 +51,4 @@ Ogni risposta va su una riga separata, senza numeri, senza introduzione.`;
     console.error("GPT error:", err);
     res.status(500).json({ error: 'Server error', details: err.message });
   }
-} 
+}
