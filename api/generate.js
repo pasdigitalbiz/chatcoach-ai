@@ -22,8 +22,8 @@ Scrivi le 3 risposte su 3 righe distinte, senza numerarle.
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
-        "OpenAI-Project": "proj_ZGHbmAMCAkX8qMMpFtYF6cKl"
+        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
+        // RIMOSSO OpenAI-Project
       },
       body: JSON.stringify({
         model: "gpt-3.5-turbo",
