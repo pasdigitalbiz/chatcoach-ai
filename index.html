@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChatCoach AI</title>
+  <style>
+    body { font-family: sans-serif; padding: 2rem; background: #f9f9f9; max-width: 600px; margin: auto; }
+    h1 { font-size: 24px; margin-bottom: 1rem; }
+    textarea, select, button { width: 100%; margin-top: 1rem; padding: 0.75rem; font-size: 1rem; }
+    #output { margin-top: 2rem; padding: 1rem; background: #fff; border-radius: 8px; box-shadow: 0 0 4px rgba(0,0,0,0.1); white-space: pre-line; }
+  </style>
+</head>
+<body>
+  <h1>ChatCoach AI</h1>
+  <textarea id="inputText" rows="5" placeholder="Inserisci qui la bio o il messaggio del match..."></textarea>
+
+  <select id="tone">
+    <option value="divertente">Divertente</option>
+    <option value="sicuro">Sicuro di sé</option>
+    <option value="dolce">Dolce</option>
+    <option value="ironico">Ironico</option>
+  </select>
+
+  <select id="language">
+    <option value="italiano">Italiano</option>
+    <option value="inglese">Inglese</option>
+  </select>
+
+  <button onclick="generateResponse()">Genera Risposte</button>
+
+  <div id="output"></div>
+
+  <script>
+    async function generateResponse() {
+      const inputText = document.getElementById('inputText').value;
+      const tone = document.getElementById('tone').value;
+      const language = document.getElementById('language').value;
+
+      const prompt = `Agisci come un assistente esperto di app di dating. L'utente ha ricevuto questo messaggio o ha matchato con questa persona: \n"${inputText}"\n\nGenera 3 risposte pronte, una per riga, che siano ${tone}, adatte per usare su Tinder o Bumble. Scrivi in ${language}. Mantieni i messaggi brevi, simpatici e realistici.`;
+
+      const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer sk-YOUR_KEY_HERE"
+        },
+        body: JSON.stringify({
+          model: "gpt-3.5-turbo",
+          messages: [{ role: "user", content: prompt }],
+          max_tokens: 200,
+          temperature: 0.9
+        })
+      });
+
+      const data = await response.json();
+      document.getElementById("output").textContent = data.choices?.[0]?.message?.content || "Errore nella generazione.";
+    }
+  </script>
+</body>
+</html>
