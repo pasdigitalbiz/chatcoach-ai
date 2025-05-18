@@ -1,3 +1,4 @@
+// /api/generate.js
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(400).json({ error: 'Only POST allowed' });
@@ -9,11 +10,17 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Missing fields in request' });
   }
 
-  const prompt = `Agisci come un esperto di app di dating. L'utente ha ricevuto questo messaggio: "${inputText}"
-Rispondi in tono ${tone}. Scrivi in ${language}.
-Genera 3 possibili risposte brevi, con un tono naturale, realistico e simpatico, adatte per Tinder o Bumble.
-Usa emoji dove ha senso, senza esagerare.
-Scrivi solo le 3 risposte, ognuna su una riga separata, senza numerarle.`;
+  const prompt = `
+Agisci come un esperto di comunicazione online e dating moderno.
+L'utente ha ricevuto questo messaggio: "${inputText}".
+
+Rispondi al messaggio come se fossi l'utente, in tono ${tone}, nella lingua ${language}.
+
+Genera 3 risposte brevi, brillanti, propositive e realistiche, con un approccio intelligente e sicuro, come farebbe una persona brillante con esperienza nelle app di dating.
+
+Evita cliché, risposte scontate o troppo generiche. Dai personalità e concretezza. Usa emoji solo se migliorano il tono, mai a caso.
+
+Ogni risposta va su una riga separata, senza numeri, senza introduzione.`;
 
   try {
     const openaiRes = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -26,8 +33,8 @@ Scrivi solo le 3 risposte, ognuna su una riga separata, senza numerarle.`;
       body: JSON.stringify({
         model: "gpt-3.5-turbo",
         messages: [{ role: "user", content: prompt }],
-        max_tokens: 250,
-        temperature: 0.8
+        max_tokens: 300,
+        temperature: 0.9
       })
     });
 
@@ -43,4 +50,4 @@ Scrivi solo le 3 risposte, ognuna su una riga separata, senza numerarle.`;
     console.error("GPT error:", err);
     res.status(500).json({ error: 'Server error', details: err.message });
   }
-}
+} 
