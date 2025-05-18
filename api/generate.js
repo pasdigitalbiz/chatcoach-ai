@@ -13,10 +13,11 @@ Genera 3 risposte pronte, una per riga, che siano ${tone}, adatte per usare su T
   try {
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
-      },
+   headers: {
+  "Content-Type": "application/json",
+  "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
+  "OpenAI-Project": "default" // ← aggiungi questa riga
+},
       body: JSON.stringify({
         model: "gpt-3.5-turbo",
         messages: [{ role: "user", content: prompt }],
