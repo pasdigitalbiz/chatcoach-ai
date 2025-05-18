@@ -2,99 +2,122 @@
 <html lang="it">
   <head>
     <meta charset="UTF-8" />
-    <title>ChatCoach AI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ChatCoach AI 💘</title>
     <style>
       body {
         font-family: Arial, sans-serif;
+        background-color: #ffeef5;
         padding: 2rem;
-        background-color: #ffeff5;
-        max-width: 900px;
-        margin: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 0;
       }
 
       h1 {
-        font-size: 1.8rem;
+        color: #000;
+        margin-bottom: 1rem;
       }
 
       textarea,
       select,
       button {
         width: 100%;
-        margin-top: 1rem;
-        padding: 0.6rem;
-        font-size: 1rem;
-        border-radius: 6px;
-        border: 1px solid #ccc;
+        max-width: 600px;
+        margin: 0.5rem 0;
+        padding: 0.8rem;
+        font-size: 1.1rem;
+        border: none;
+        border-radius: 5px;
+        box-sizing: border-box;
+      }
+
+      textarea {
+        resize: vertical;
       }
 
       button {
-        background-color: #e91e63;
+        background-color: #ec0e70;
         color: white;
         font-weight: bold;
         cursor: pointer;
-        border: none;
       }
 
-      #responses {
+      button:hover {
+        background-color: #d00e66;
+      }
+
+      .responses {
         display: flex;
         flex-direction: row;
-        justify-content: space-between;
+        flex-wrap: wrap;
+        justify-content: center;
         gap: 1rem;
         margin-top: 2rem;
-        flex-wrap: wrap;
+        width: 100%;
+        max-width: 900px;
       }
 
       .response-box {
-        background: #fff;
-        border-radius: 12px;
+        background-color: #fff;
         padding: 1rem;
-        flex: 1 1 30%;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        flex: 1 1 calc(33% - 2rem);
+        min-width: 250px;
+        max-width: 300px;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+        box-sizing: border-box;
+      }
+
+      .response-box p {
+        margin-bottom: 1rem;
         font-size: 1rem;
       }
 
       .copy-btn {
-        background-color: #e91e63;
-        color: #fff;
+        background-color: #ec0e70;
+        color: white;
         border: none;
-        padding: 0.4rem 0.8rem;
-        font-size: 0.8rem;
-        margin-top: 1rem;
+        border-radius: 5px;
+        padding: 0.4rem;
+        font-size: 0.9rem;
         cursor: pointer;
-        border-radius: 6px;
-        align-self: flex-end;
       }
 
       @media (max-width: 768px) {
-        #responses {
+        body {
+          padding: 1rem;
+          zoom: 1.2;
+        }
+
+        .responses {
           flex-direction: column;
+          align-items: center;
         }
 
         .response-box {
-          flex: 1 1 100%;
-          font-size: 1rem;
-        }
-
-        .copy-btn {
-          font-size: 0.9rem;
-          width: 100%;
-          align-self: center;
+          width: 90%;
+          max-width: none;
         }
       }
     </style>
   </head>
   <body>
     <h1>ChatCoach AI 💘</h1>
-    <textarea id="inputText" rows="4" placeholder="Scrivi qui il messaggio del match..."></textarea>
+
+    <textarea id="inputText" rows="4" placeholder="Scrivi qui il messaggio ricevuto..."></textarea>
+
     <select id="tone">
       <option value="Divertente">Divertente</option>
       <option value="Ironico">Ironico</option>
       <option value="Sicuro di sé">Sicuro di sé</option>
       <option value="Romantico">Romantico</option>
     </select>
+
     <select id="language">
       <option value="Italiano">Italiano</option>
       <option value="Inglese">Inglese</option>
@@ -102,9 +125,23 @@
       <option value="Tedesco">Tedesco</option>
       <option value="Spagnolo">Spagnolo</option>
     </select>
+
     <button onclick="generateResponse()">Genera Risposte</button>
 
-    <div id="responses"></div>
+    <div class="responses">
+      <div class="response-box">
+        <p id="response1"></p>
+        <button class="copy-btn" onclick="copyToClipboard('response1')">📋 Copia</button>
+      </div>
+      <div class="response-box">
+        <p id="response2"></p>
+        <button class="copy-btn" onclick="copyToClipboard('response2')">📋 Copia</button>
+      </div>
+      <div class="response-box">
+        <p id="response3"></p>
+        <button class="copy-btn" onclick="copyToClipboard('response3')">📋 Copia</button>
+      </div>
+    </div>
 
     <script>
       async function generateResponse() {
@@ -112,41 +149,37 @@
         const tone = document.getElementById("tone").value;
         const language = document.getElementById("language").value;
 
-        const payload = { inputText, tone, language };
+        const payload = {
+          inputText,
+          tone,
+          language,
+        };
 
         try {
-          const res = await fetch("/api/generate", {
+          const response = await fetch("/api/generate", {
             method: "POST",
             headers: {
-              "Content-Type": "application/json"
+              "Content-Type": "application/json",
             },
-            body: JSON.stringify(payload)
+            body: JSON.stringify(payload),
           });
 
-          const data = await res.json();
+          const data = await response.json();
+          const lines = data.output?.split('\n').filter(Boolean);
 
-          if (!data.output) {
-            document.getElementById("responses").innerHTML = "Errore nella risposta.";
-            return;
-          }
-
-          const lines = data.output.trim().split("\n");
-          const container = document.getElementById("responses");
-          container.innerHTML = "";
-
-          lines.forEach((line, i) => {
-            const box = document.createElement("div");
-            box.className = "response-box";
-            box.innerHTML = `
-              ${line.trim()}
-              <button class="copy-btn" onclick="navigator.clipboard.writeText(\`${line.trim()}\`)">📋 Copia</button>
-            `;
-            container.appendChild(box);
-          });
-
-        } catch (err) {
-          document.getElementById("responses").innerHTML = "Errore API.";
+          document.getElementById("response1").textContent = lines?.[0] || "";
+          document.getElementById("response2").textContent = lines?.[1] || "";
+          document.getElementById("response3").textContent = lines?.[2] || "";
+        } catch (error) {
+          document.getElementById("response1").textContent = "Errore nella risposta.";
+          document.getElementById("response2").textContent = "";
+          document.getElementById("response3").textContent = "";
         }
+      }
+
+      function copyToClipboard(id) {
+        const text = document.getElementById(id).textContent;
+        navigator.clipboard.writeText(text);
       }
     </script>
   </body>
