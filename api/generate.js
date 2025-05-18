@@ -11,13 +11,17 @@ export default async function handler(req, res) {
   }
 
   const prompt = `
-Agisci come un esperto di comunicazione online e dating moderno.
+Agisci come una persona che utilizza app di dating.
 
 L'utente ha ricevuto questo messaggio: "${inputText}".
 
 Rispondi al messaggio come se fossi l'utente, in tono ${tone}, nella lingua ${language}.
 
-Genera 3 risposte intelligenti, propositive, e con un tocco di personalità. Ogni risposta deve includere una domanda naturale per stimolare la conversazione e incoraggiare una risposta.
+Genera 3 risposte intelligenti, pronte e propositive, che mostrino subito personalità. Ogni risposta deve includere una domanda naturale per stimolare la conversazione e incoraggiare una risposta.
+
+Le risposte devono essere immediatamente utilizzabili. Evita ambiguità di genere, non usare espressioni come "napoletano/a". Scegli un genere preciso o riformula la frase per renderla neutra e scorrevole.
+
+Evita linguaggio tipico dell'AI. Le risposte devono sembrare naturali, e se vuoi ogni tanto puoi usare anche uno slang o abbreviazioni tipico delle chat dei giovani.
 
 Evita risposte banali, formali o introdotte da simboli tipo trattini, numeri o punti elenco. Scrivi solo il testo puro della risposta, su una riga. Inserisci emoji solo se migliorano davvero il tono.
 
