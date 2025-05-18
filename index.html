@@ -2,122 +2,69 @@
 <html lang="it">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ChatCoach AI 💘</title>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
     <style>
       body {
         font-family: Arial, sans-serif;
-        background-color: #ffeef5;
-        padding: 2rem;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin: 0;
-      }
-
-      h1 {
-        color: #000;
-        margin-bottom: 1rem;
-      }
-
-      textarea,
-      select,
-      button {
-        width: 100%;
+        background-color: #ffeaf4;
         max-width: 600px;
-        margin: 0.5rem 0;
-        padding: 0.8rem;
-        font-size: 1.1rem;
-        border: none;
-        border-radius: 5px;
-        box-sizing: border-box;
+        margin: auto;
+        padding: 2rem;
       }
-
-      textarea {
-        resize: vertical;
+      h1 {
+        text-align: center;
       }
-
+      textarea, select, button, input[type="file"] {
+        width: 100%;
+        margin-top: 1rem;
+        padding: 0.7rem;
+        font-size: 1rem;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+      }
       button {
-        background-color: #ec0e70;
+        background-color: #ec0c7c;
         color: white;
         font-weight: bold;
-        cursor: pointer;
+        border: none;
       }
-
-      button:hover {
-        background-color: #d00e66;
-      }
-
-      .responses {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 1rem;
-        margin-top: 2rem;
-        width: 100%;
-        max-width: 900px;
-      }
-
-      .response-box {
-        background-color: #fff;
+      .responseBox {
+        background: white;
         padding: 1rem;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        flex: 1 1 calc(33% - 2rem);
-        min-width: 250px;
-        max-width: 300px;
+        border-radius: 8px;
+        margin-top: 1rem;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         display: flex;
-        flex-direction: column;
         justify-content: space-between;
-        box-sizing: border-box;
+        align-items: center;
       }
-
-      .response-box p {
-        margin-bottom: 1rem;
-        font-size: 1rem;
+      .responseText {
+        flex-grow: 1;
+        margin-right: 10px;
       }
-
-      .copy-btn {
-        background-color: #ec0e70;
+      .copyBtn {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+        background-color: #ec0c7c;
         color: white;
         border: none;
-        border-radius: 5px;
-        padding: 0.4rem;
-        font-size: 0.9rem;
+        border-radius: 4px;
         cursor: pointer;
-      }
-
-      @media (max-width: 768px) {
-        body {
-          padding: 1rem;
-          zoom: 1.2;
-        }
-
-        .responses {
-          flex-direction: column;
-          align-items: center;
-        }
-
-        .response-box {
-          width: 90%;
-          max-width: none;
-        }
       }
     </style>
   </head>
   <body>
     <h1>ChatCoach AI 💘</h1>
 
-    <textarea id="inputText" rows="4" placeholder="Scrivi qui il messaggio ricevuto..."></textarea>
-
+    <textarea id="inputText" rows="4" placeholder="Scrivi un messaggio o carica uno screenshot..."></textarea>
+    <input type="file" id="screenshot" accept="image/*" />
     <select id="tone">
       <option value="Divertente">Divertente</option>
       <option value="Ironico">Ironico</option>
       <option value="Sicuro di sé">Sicuro di sé</option>
       <option value="Romantico">Romantico</option>
     </select>
-
     <select id="language">
       <option value="Italiano">Italiano</option>
       <option value="Inglese">Inglese</option>
@@ -125,61 +72,63 @@
       <option value="Tedesco">Tedesco</option>
       <option value="Spagnolo">Spagnolo</option>
     </select>
-
     <button onclick="generateResponse()">Genera Risposte</button>
 
-    <div class="responses">
-      <div class="response-box">
-        <p id="response1"></p>
-        <button class="copy-btn" onclick="copyToClipboard('response1')">📋 Copia</button>
-      </div>
-      <div class="response-box">
-        <p id="response2"></p>
-        <button class="copy-btn" onclick="copyToClipboard('response2')">📋 Copia</button>
-      </div>
-      <div class="response-box">
-        <p id="response3"></p>
-        <button class="copy-btn" onclick="copyToClipboard('response3')">📋 Copia</button>
-      </div>
-    </div>
+    <div id="outputContainer"></div>
 
     <script>
+      async function extractTextFromImage(file) {
+        const { data: { text } } = await Tesseract.recognize(file, 'ita');
+        return text;
+      }
+
       async function generateResponse() {
-        const inputText = document.getElementById("inputText").value;
+        const inputField = document.getElementById("inputText");
+        const screenshot = document.getElementById("screenshot").files[0];
         const tone = document.getElementById("tone").value;
         const language = document.getElementById("language").value;
 
-        const payload = {
-          inputText,
-          tone,
-          language,
-        };
+        let finalText = inputField.value;
+        if (screenshot) finalText = await extractTextFromImage(screenshot);
 
-        try {
-          const response = await fetch("/api/generate", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(payload),
-          });
-
-          const data = await response.json();
-          const lines = data.output?.split('\n').filter(Boolean);
-
-          document.getElementById("response1").textContent = lines?.[0] || "";
-          document.getElementById("response2").textContent = lines?.[1] || "";
-          document.getElementById("response3").textContent = lines?.[2] || "";
-        } catch (error) {
-          document.getElementById("response1").textContent = "Errore nella risposta.";
-          document.getElementById("response2").textContent = "";
-          document.getElementById("response3").textContent = "";
+        if (!finalText.trim()) {
+          alert("Inserisci un testo o carica uno screenshot.");
+          return;
         }
-      }
 
-      function copyToClipboard(id) {
-        const text = document.getElementById(id).textContent;
-        navigator.clipboard.writeText(text);
+        const payload = { inputText: finalText, tone, language };
+
+        const response = await fetch("/api/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+
+        const data = await response.json();
+
+        const output = data.output || "Errore nella risposta.";
+        const cleaned = output.split(/\n|\r/).filter(line => line.trim() && !line.trim().match(/^\d+[.)]/));
+
+        const container = document.getElementById("outputContainer");
+        container.innerHTML = "";
+
+        cleaned.forEach(text => {
+          const div = document.createElement("div");
+          div.className = "responseBox";
+
+          const span = document.createElement("span");
+          span.className = "responseText";
+          span.textContent = text.trim();
+
+          const btn = document.createElement("button");
+          btn.className = "copyBtn";
+          btn.textContent = "📋 Copia";
+          btn.onclick = () => navigator.clipboard.writeText(text);
+
+          div.appendChild(span);
+          div.appendChild(btn);
+          container.appendChild(div);
+        });
       }
     </script>
   </body>
