@@ -54,10 +54,13 @@
   <div id="output"></div>
 
   <script>
-    async function generateResponse() {
-      const inputText = document.getElementById('inputText').value;
-      const tone = document.getElementById('tone').value;
-      const language = document.getElementById('language').value;
+  async function generateResponse() {
+    console.log("Generazione avviata");
+    const inputText = document.getElementById('inputText').value;
+    const tone = document.getElementById('tone').value;
+    const language = document.getElementById('language').value;
+    ...
+
 
       try {
         const response = await fetch("/api/generate", {
