@@ -5,21 +5,20 @@
     <title>ChatCoach AI</title>
     <style>
       body {
-        font-family: sans-serif;
+        font-family: Arial, sans-serif;
+        padding: 2rem;
+        background-color: #f9f9f9;
         max-width: 600px;
         margin: auto;
-        padding: 2rem;
-        background: #f9f9f9;
       }
-      textarea,
-      select,
-      button {
+      textarea, select, button {
         width: 100%;
-        margin-bottom: 1rem;
+        margin-top: 1rem;
         padding: 0.5rem;
         font-size: 1rem;
       }
       #output {
+        margin-top: 2rem;
         background: #fff;
         padding: 1rem;
         border-radius: 8px;
@@ -31,17 +30,21 @@
   <body>
     <h1>ChatCoach AI</h1>
 
-    <textarea id="inputText" rows="5" placeholder="Scrivi qui la bio o il messaggio del match..."></textarea>
+    <textarea id="inputText" rows="5" placeholder="Inserisci qui la bio o il messaggio del match..."></textarea>
 
     <select id="tone">
       <option value="Divertente">Divertente</option>
       <option value="Ironico">Ironico</option>
       <option value="Sicuro di sé">Sicuro di sé</option>
+      <option value="Romantico">Romantico</option>
     </select>
 
     <select id="language">
       <option value="Italiano">Italiano</option>
       <option value="Inglese">Inglese</option>
+      <option value="Francese">Francese</option>
+      <option value="Tedesco">Tedesco</option>
+      <option value="Spagnolo">Spagnolo</option>
     </select>
 
     <button onclick="generateResponse()">Genera Risposte</button>
@@ -54,22 +57,30 @@
         const tone = document.getElementById("tone").value;
         const language = document.getElementById("language").value;
 
-        const prompt = `Agisci come un assistente esperto di app di dating. L'utente ha ricevuto questo messaggio o ha scritto questa bio:\n"${inputText}"\n\nGenera 3 risposte pronte, una per riga, con tono ${tone}, in ${language}. Mantieni i messaggi brevi, simpatici e realistici.`;
+        if (!inputText || !tone || !language) {
+          document.getElementById("output").textContent = "Compila tutti i campi.";
+          return;
+        }
+
+        const payload = {
+          inputText,
+          tone,
+          language
+        };
 
         try {
           const response = await fetch("/api/generate", {
             method: "POST",
             headers: {
-              "Content-Type": "application/json",
+              "Content-Type": "application/json"
             },
-            body: JSON.stringify({
-              prompt: prompt,
-            }),
+            body: JSON.stringify(payload)
           });
 
           const data = await response.json();
+
           document.getElementById("output").textContent =
-            data.choices?.[0]?.message?.content || "Errore nella risposta.";
+            data.output || "Errore nella risposta.";
         } catch (error) {
           document.getElementById("output").textContent =
             "Errore API: " + error.message;
@@ -78,4 +89,3 @@
     </script>
   </body>
 </html>
-
