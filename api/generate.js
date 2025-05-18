@@ -12,22 +12,22 @@ export default async function handler(req, res) {
 
   const prompt = `Agisci come un esperto di app di dating. L'utente ha ricevuto questo messaggio: "${inputText}"
 Rispondi in tono ${tone}. Scrivi in ${language}.
-Genera 3 risposte brevi, realistiche, naturali, divertenti ma non forzate, adatte a Tinder o Bumble.
-Ogni risposta su una nuova riga. Usa emoji dove ha senso, senza esagerare.`;
+Genera 3 possibili risposte brevi, con un tono naturale, realistico e simpatico, adatte per Tinder o Bumble.
+Usa emoji dove ha senso, senza esagerare.
+Scrivi le 3 risposte su 3 righe distinte, senza numerarle.`;
 
   try {
     const openaiRes = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
-        "OpenAI-Project": "proj_ZGHbmAMCAkX8qMMpFtYF6cKl"
+        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
       },
       body: JSON.stringify({
         model: "gpt-3.5-turbo",
         messages: [{ role: "user", content: prompt }],
-        temperature: 0.8,
-        max_tokens: 250
+        max_tokens: 250,
+        temperature: 0.8
       })
     });
 
@@ -35,12 +35,12 @@ Ogni risposta su una nuova riga. Usa emoji dove ha senso, senza esagerare.`;
     const output = data.choices?.[0]?.message?.content;
 
     if (!output) {
-      return res.status(500).json({ error: 'Empty response from GPT' });
+      return res.status(500).json({ error: 'Empty response from GPT', details: data });
     }
 
     res.status(200).json({ output });
   } catch (err) {
     console.error("GPT error:", err);
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: 'Server error', details: err.message });
   }
 }
