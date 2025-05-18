@@ -70,8 +70,9 @@
         });
 
         const data = await response.json();
-        document.getElementById("output").textContent =
-          data.message || data.error || "Errore nella risposta.";
+       console.log("RISPOSTA API:", data);
+document.getElementById("output").textContent =
+  data.message || data.error || JSON.stringify(data);
       } catch (error) {
         document.getElementById("output").textContent = "Errore di rete: " + error.message;
       }
