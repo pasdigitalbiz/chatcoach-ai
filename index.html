@@ -2,81 +2,62 @@
 <html lang="it">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ChatCoach AI 💘</title>
-    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
     <style>
       body {
-        font-family: "Helvetica Neue", sans-serif;
-        background-color: #fff4d6;
-        max-width: 800px;
-        margin: auto;
+        background-color: #fff4e6;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
         padding: 2rem;
+        max-width: 600px;
+        margin: auto;
       }
-
       h1 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
         text-align: center;
-        color: #000;
       }
-
       textarea, select, button, input[type="file"] {
         width: 100%;
         margin-top: 1rem;
-        padding: 0.8rem;
+        padding: 0.7rem;
         font-size: 1rem;
         border-radius: 8px;
         border: 1px solid #ccc;
-        box-sizing: border-box;
       }
-
       button {
-        background-color: #ff5b5b;
+        background-color: #ff5f7e;
         color: white;
-        font-weight: bold;
         border: none;
         cursor: pointer;
+        font-weight: bold;
       }
-
+      #outputContainer {
+        margin-top: 2rem;
+        display: none;
+        flex-direction: column;
+        gap: 1rem;
+      }
       .responseBox {
         background: white;
         padding: 1rem;
-        border-radius: 10px;
-        margin-top: 1rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
         display: flex;
         justify-content: space-between;
         align-items: center;
       }
-
-      .responseText {
-        flex-grow: 1;
-        margin-right: 10px;
-      }
-
       .copyBtn {
-        padding: 6px 10px;
-        font-size: 0.85rem;
-        background-color: #ff5b5b;
-        color: white;
+        background-color: #ff5f7e;
         border: none;
-        border-radius: 6px;
+        color: white;
+        padding: 0.4rem 0.8rem;
+        font-size: 0.9rem;
+        border-radius: 5px;
         cursor: pointer;
       }
-
-      @media (max-width: 768px) {
+      @media screen and (max-width: 600px) {
         body {
           padding: 1rem;
-          font-size: 1.1rem;
-        }
-
-        .responseBox {
-          flex-direction: column;
-          align-items: flex-start;
-        }
-
-        .copyBtn {
-          margin-top: 0.5rem;
-          width: 100%;
         }
       }
     </style>
@@ -84,14 +65,16 @@
   <body>
     <h1>ChatCoach AI 💘</h1>
 
-    <textarea id="inputText" rows="4" placeholder="Scrivi un messaggio o carica uno screenshot..."></textarea>
-    <input type="file" id="screenshot" accept="image/*" />
+    <textarea id="inputText" rows="4" placeholder="Scrivi qui il messaggio ricevuto o carica uno screenshot"></textarea>
+    <input type="file" id="imageUpload" accept="image/*" />
+
     <select id="tone">
       <option value="Divertente">Divertente</option>
       <option value="Ironico">Ironico</option>
       <option value="Sicuro di sé">Sicuro di sé</option>
       <option value="Romantico">Romantico</option>
     </select>
+
     <select id="language">
       <option value="Italiano">Italiano</option>
       <option value="Inglese">Inglese</option>
@@ -99,63 +82,76 @@
       <option value="Tedesco">Tedesco</option>
       <option value="Spagnolo">Spagnolo</option>
     </select>
+
     <button onclick="generateResponse()">Genera Risposte</button>
 
     <div id="outputContainer"></div>
 
     <script>
       async function extractTextFromImage(file) {
-        const { data: { text } } = await Tesseract.recognize(file, 'ita');
-        return text;
-      }
+        const formData = new FormData();
+        formData.append("file", file);
 
-      async function generateResponse() {
-        const inputField = document.getElementById("inputText");
-        const screenshot = document.getElementById("screenshot").files[0];
-        const tone = document.getElementById("tone").value;
-        const language = document.getElementById("language").value;
-
-        let finalText = inputField.value;
-        if (screenshot) finalText = await extractTextFromImage(screenshot);
-
-        if (!finalText.trim()) {
-          alert("Inserisci un testo o carica uno screenshot.");
-          return;
-        }
-
-        const payload = { inputText: finalText, tone, language };
-
-        const response = await fetch("/api/generate", {
+        const response = await fetch("https://api.ocr.space/parse/image", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
+          headers: {
+            apikey: "helloworld" // usa la tua OCR API key vera per la produzione
+          },
+          body: formData
         });
 
         const data = await response.json();
+        return data.ParsedResults?.[0]?.ParsedText || "";
+      }
 
-        const output = data.output || "Errore nella risposta.";
-        const cleaned = output.split(/\n|\r/).filter(line => line.trim() && !line.trim().match(/^\d+[.)]/));
+      async function generateResponse() {
+        const inputText = document.getElementById("inputText").value;
+        const tone = document.getElementById("tone").value;
+        const language = document.getElementById("language").value;
+        const image = document.getElementById("imageUpload").files[0];
 
-        const container = document.getElementById("outputContainer");
-        container.innerHTML = "";
+        let finalInput = inputText;
 
-        cleaned.forEach(text => {
-          const div = document.createElement("div");
-          div.className = "responseBox";
+        if (image) {
+          const extractedText = await extractTextFromImage(image);
+          finalInput = inputText + "\n" + extractedText;
+        }
 
-          const span = document.createElement("span");
-          span.className = "responseText";
-          span.textContent = text.trim();
+        if (!finalInput.trim()) {
+          alert("Inserisci un testo o carica uno screenshot");
+          return;
+        }
 
-          const btn = document.createElement("button");
-          btn.className = "copyBtn";
-          btn.textContent = "📋 Copia";
-          btn.onclick = () => navigator.clipboard.writeText(text);
+        const payload = { inputText: finalInput, tone, language };
 
-          div.appendChild(span);
-          div.appendChild(btn);
-          container.appendChild(div);
-        });
+        try {
+          const res = await fetch("/api/generate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+
+          const data = await res.json();
+
+          const container = document.getElementById("outputContainer");
+          container.innerHTML = "";
+
+          if (data.output) {
+            const responses = data.output.split(/\n+/).filter(r => r.trim() !== "");
+            container.style.display = "flex";
+
+            responses.forEach(resp => {
+              const box = document.createElement("div");
+              box.className = "responseBox";
+              box.innerHTML = `<span>${resp}</span><button class='copyBtn' onclick='navigator.clipboard.writeText(\"${resp.replace(/\"/g, "\\\"")}\")'>📋 Copia</button>`;
+              container.appendChild(box);
+            });
+          } else {
+            container.textContent = "Nessuna risposta generata.";
+          }
+        } catch (err) {
+          document.getElementById("outputContainer").textContent = "Errore: " + err.message;
+        }
       }
     </script>
   </body>
