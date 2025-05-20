@@ -112,24 +112,24 @@
     <input type="file" id="imageUpload" accept="image/*" />
 
     <select id="tone">
-  <option value="Divertente">😄 Divertente</option>
-  <option value="Romantico">💘 Romantico</option>
-  <option value="Sicuro di sé">😏 Sicuro di sé</option>
-  <option value="Malizioso">😈 Malizioso</option>
-</select>
+      <option value="Divertente">😄 Divertente</option>
+      <option value="Romantico">💘 Romantico</option>
+      <option value="Sicuro di sé">💪 Sicuro di sé</option>
+      <option value="Malizioso">😏 Malizioso</option>
+    </select>
 
     <select id="language">
-      <option value="Italiano">🇮🇹Italiano</option>
-      <option value="Inglese">🇬🇧Inglese</option>
-      <option value="Francese">🇫🇷Francese</option>
-      <option value="Tedesco">🇩🇪Tedesco</option>
-      <option value="Spagnolo">🇪🇸Spagnolo</option>
+      <option value="Italiano">🇮🇹 Italiano</option>
+      <option value="Inglese">🇬🇧 Inglese</option>
+      <option value="Francese">🇫🇷 Francese</option>
+      <option value="Tedesco">🇩🇪 Tedesco</option>
+      <option value="Spagnolo">🇪🇸 Spagnolo</option>
     </select>
 
     <div style="margin-top: 1rem; font-size: 0.9rem;">
       <label>
         <input type="checkbox" id="privacyCheckbox" />
-        Ho letto e accetto la <a href="https://chatcoach-ai.vercel.app/privacy.html" target="_blank">Privacy Policy</a>
+        Ho letto e accetto la <a href="/privacy.html" target="_blank">Privacy Policy</a>
       </label>
     </div>
 
@@ -138,6 +138,31 @@
     <div id="outputContainer"></div>
 
     <script>
+      let requestTimestamps = JSON.parse(localStorage.getItem("generationTimestamps")) || [];
+      let isBlocked = false;
+
+      function checkSpamAndSetBlock() {
+        const now = Date.now();
+        requestTimestamps = requestTimestamps.filter(t => now - t < 30000);
+
+        if (requestTimestamps.length >= 3) {
+          isBlocked = true;
+          alert("Stai andando troppo veloce! Aspetta 1 minuto prima di generare nuove risposte.");
+          document.querySelector("button").disabled = true;
+
+          setTimeout(() => {
+            isBlocked = false;
+            document.querySelector("button").disabled = false;
+          }, 60000);
+
+          return true;
+        }
+
+        requestTimestamps.push(now);
+        localStorage.setItem("generationTimestamps", JSON.stringify(requestTimestamps));
+        return false;
+      }
+
       async function extractTextFromImage(file) {
         const formData = new FormData();
         formData.append("file", file);
@@ -155,6 +180,12 @@
       }
 
       async function generateResponse() {
+        if (isBlocked) {
+          alert("Aspetta qualche secondo prima di riprovare.");
+          return;
+        }
+        if (checkSpamAndSetBlock()) return;
+
         if (!document.getElementById("privacyCheckbox").checked) {
           alert("Devi accettare la Privacy Policy per continuare.");
           return;
