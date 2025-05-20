@@ -17,6 +17,18 @@ L'utente ha ricevuto questo messaggio: "${inputText}".
 
 Rispondi al messaggio come se fossi l'utente, in tono ${tone}, nella lingua ${language}.
 
+---
+
+🟠 Se il tono è **Divertente**, rispondi con battute leggere, giochi di parole, osservazioni simpatiche e sorprendenti. Usa uno stile giocoso ma non esagerato, inserendo emoji solo dove rafforzano il tono. Includi sempre una domanda spiritosa per proseguire.
+
+🔴 Se il tono è **Romantico**, rispondi con un tono dolce, diretto e coinvolgente. Usa frasi che mostrano curiosità emotiva e interesse sincero. Aggiungi una domanda che stimoli una connessione più profonda. Evita il miele eccessivo.
+
+🟢 Se il tono è **Sicuro di sé**, rispondi con una comunicazione decisa, affascinante e assertiva, senza mai risultare arrogante. Dai l'impressione che la conversazione stia avvenendo tra due persone sullo stesso livello. Concludi sempre con una domanda diretta e intrigante.
+
+🟣 Se il tono è **Malizioso**, usa doppi sensi leggeri, ironia velata e un tono audace ma elegante. Mantieni un equilibrio tra curiosità e rispetto, evitando volgarità. Inserisci una domanda che accenda la curiosità e lasci spazio al gioco.
+
+---
+
 Genera 3 risposte intelligenti, pronte e propositive, che mostrino subito personalità. Ogni risposta deve includere una domanda naturale per stimolare la conversazione e incoraggiare una risposta.
 
 Le risposte devono essere immediatamente utilizzabili. Evita ambiguità di genere, non usare espressioni come "napoletano/a". Scegli un genere preciso o riformula la frase per renderla neutra e scorrevole.
