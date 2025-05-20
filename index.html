@@ -85,21 +85,6 @@
 </head>
 <body>
   <h1 id="title">Dating Buddy 💘</h1>
-
-  <div style="display: flex; justify-content: center; margin-top: 1rem;">
-  <script type="text/javascript">
-    atOptions = {
-      'key': 'f708fcea40e818d804fa27cace971ea3',
-      'format': 'iframe',
-      'height': 50,
-      'width': 320,
-      'params': {}
-    };
-  </script>
-  <script type="text/javascript" src="//www.highperformanceformat.com/f708fcea40e818d804fa27cace971ea3/invoke.js"></script>
-</div>
-
-  
   <p id="intro" style="text-align: center; font-size: 1rem; color: #333; margin-top: 0.5rem; font-style: italic;"></p>
 
   <textarea id="inputText" rows="4"></textarea>
@@ -114,20 +99,6 @@
       <span id="privacyText"></span> <a href="/privacy.html" target="_blank">Privacy Policy</a>
     </label>
   </div>
-
-  <div style="display: flex; justify-content: center; margin-top: 1rem;">
-  <script type="text/javascript">
-    atOptions = {
-      'key': 'f708fcea40e818d804fa27cace971ea3',
-      'format': 'iframe',
-      'height': 50,
-      'width': 320,
-      'params': {}
-    };
-  </script>
-  <script type="text/javascript" src="//www.highperformanceformat.com/f708fcea40e818d804fa27cace971ea3/invoke.js"></script>
-</div>
-
 
   <button id="generateBtn" onclick="generateResponse()">Cosa rispondo?</button>
   <div id="outputContainer"></div>
@@ -297,16 +268,15 @@
       const container = document.getElementById("outputContainer");
       container.innerHTML = "";
 
-  if (data.output) {
+      if (data.output) {
         const responses = data.output.split(/\n+/).filter(r => r.trim());
         responses.forEach(resp => {
           const box = document.createElement("div");
           box.className = "responseBox";
-          box.innerHTML = 
+          box.innerHTML = `
             <span>${resp}</span>
-            <button class="copyBtn" onclick='navigator.clipboard.writeText(\${resp.replace(//g, "\\")}\)'>📋 Copia</button>;
+            <button class="copyBtn" onclick='navigator.clipboard.writeText(\`${resp.replace(/`/g, "\\`")}\`)'>📋 Copia</button>`;
           container.appendChild(box);
-
         });
       } else {
         container.textContent = "Nessuna risposta generata.";
