@@ -101,14 +101,10 @@
     </style>
   </head>
   <body>
-    <h1>Dating Buddy 💘</h1>
-    <p style="text-align: center; font-size: 1rem; color: #333; margin-top: 0.5rem; font-style: italic;">
-      💬 Hai un match ma non sai come rispondere?<br />
-      Dating Buddy ti aiuta a scrivere messaggi brillanti, naturali e pronti all’uso.<br />
-      Puoi anche caricare uno screenshot per ricevere consigli su misura.
-    </p>
+    <h1 id="title">Dating Buddy 💘</h1>
+    <p id="intro" style="text-align: center; font-size: 1rem; color: #333; margin-top: 0.5rem; font-style: italic;"></p>
 
-    <textarea id="inputText" rows="4" placeholder="Scrivi qui il messaggio ricevuto o carica uno screenshot..."></textarea>
+    <textarea id="inputText" rows="4"></textarea>
     <input type="file" id="imageUpload" accept="image/*" />
 
     <select id="tone">
@@ -119,124 +115,65 @@
     </select>
 
     <select id="language">
-      <option value="Italiano">🇮🇹 Italiano</option>
-      <option value="Inglese">🇬🇧 Inglese</option>
-      <option value="Francese">🇫🇷 Francese</option>
-      <option value="Tedesco">🇩🇪 Tedesco</option>
-      <option value="Spagnolo">🇪🇸 Spagnolo</option>
+      <option value="Italiano">🇮🇹Italiano</option>
+      <option value="Inglese">🇬🇧Inglese</option>
+      <option value="Francese">🇫🇷Francese</option>
+      <option value="Tedesco">🇩🇪Tedesco</option>
+      <option value="Spagnolo">🇪🇸Spagnolo</option>
     </select>
 
     <div style="margin-top: 1rem; font-size: 0.9rem;">
       <label>
         <input type="checkbox" id="privacyCheckbox" />
-        Ho letto e accetto la <a href="/privacy.html" target="_blank">Privacy Policy</a>
+        <span id="privacyText"></span> <a href="/privacy.html" target="_blank">Privacy Policy</a>
       </label>
     </div>
 
-    <button onclick="generateResponse()">Cosa rispondo?</button>
+    <button id="generateBtn" onclick="generateResponse()">Cosa rispondo?</button>
 
     <div id="outputContainer"></div>
 
     <script>
-      let requestTimestamps = JSON.parse(localStorage.getItem("generationTimestamps")) || [];
-      let isBlocked = false;
-
-      function checkSpamAndSetBlock() {
-        const now = Date.now();
-        requestTimestamps = requestTimestamps.filter(t => now - t < 30000);
-
-        if (requestTimestamps.length >= 3) {
-          isBlocked = true;
-          alert("Stai andando troppo veloce! Aspetta 1 minuto prima di generare nuove risposte.");
-          document.querySelector("button").disabled = true;
-
-          setTimeout(() => {
-            isBlocked = false;
-            document.querySelector("button").disabled = false;
-          }, 60000);
-
-          return true;
+      const translations = {
+        it: {
+          intro: "💬 Hai un match ma non sai come rispondere?<br>Dating Buddy ti aiuta a scrivere messaggi brillanti, naturali e pronti all’uso.<br>Puoi anche caricare uno screenshot per ricevere consigli su misura.",
+          placeholder: "Scrivi qui il messaggio ricevuto o carica uno screenshot...",
+          button: "Cosa rispondo?",
+          privacy: "Ho letto e accetto la"
+        },
+        en: {
+          intro: "💬 Got a match but don’t know what to say?<br>Dating Buddy helps you craft clever, natural, ready-to-send replies.<br>You can also upload a screenshot for tailored advice.",
+          placeholder: "Write here the message you received or upload a screenshot...",
+          button: "What should I reply?",
+          privacy: "I have read and accept the"
+        },
+        fr: {
+          intro: "💬 Un match et tu ne sais pas quoi répondre ?<br>Dating Buddy t’aide à rédiger des réponses brillantes et naturelles.<br>Tu peux aussi envoyer une capture d’écran pour un conseil personnalisé.",
+          placeholder: "Écris ici le message reçu ou télécharge une capture d’écran...",
+          button: "Que répondre ?",
+          privacy: "J’ai lu et j’accepte la"
+        },
+        de: {
+          intro: "💬 Du hast ein Match, aber weißt nicht, was du schreiben sollst?<br>Dating Buddy hilft dir, clevere und natürliche Antworten zu schreiben.<br>Du kannst auch einen Screenshot hochladen für maßgeschneiderte Tipps.",
+          placeholder: "Schreib hier die Nachricht oder lade einen Screenshot hoch...",
+          button: "Was soll ich antworten?",
+          privacy: "Ich habe die gelesen und akzeptiere die"
+        },
+        es: {
+          intro: "💬 ¿Tienes un match y no sabes qué responder?<br>Dating Buddy te ayuda a crear mensajes naturales y listos para usar.<br>También puedes subir una captura de pantalla para recibir consejos personalizados.",
+          placeholder: "Escribe aquí el mensaje recibido o sube una captura de pantalla...",
+          button: "¿Qué respondo?",
+          privacy: "He leído y acepto la"
         }
+      };
 
-        requestTimestamps.push(now);
-        localStorage.setItem("generationTimestamps", JSON.stringify(requestTimestamps));
-        return false;
-      }
+      const lang = navigator.language.slice(0,2);
+      const t = translations[lang] || translations.en;
 
-      async function extractTextFromImage(file) {
-        const formData = new FormData();
-        formData.append("file", file);
-
-        const response = await fetch("https://api.ocr.space/parse/image", {
-          method: "POST",
-          headers: {
-            apikey: "helloworld"
-          },
-          body: formData
-        });
-
-        const data = await response.json();
-        return data.ParsedResults?.[0]?.ParsedText || "";
-      }
-
-      async function generateResponse() {
-        if (isBlocked) {
-          alert("Aspetta qualche secondo prima di riprovare.");
-          return;
-        }
-        if (checkSpamAndSetBlock()) return;
-
-        if (!document.getElementById("privacyCheckbox").checked) {
-          alert("Devi accettare la Privacy Policy per continuare.");
-          return;
-        }
-
-        const inputText = document.getElementById("inputText").value;
-        const tone = document.getElementById("tone").value;
-        const language = document.getElementById("language").value;
-        const image = document.getElementById("imageUpload").files[0];
-
-        let finalInput = inputText;
-
-        if (image) {
-          const extractedText = await extractTextFromImage(image);
-          finalInput = inputText + "\n" + extractedText;
-        }
-
-        if (!finalInput.trim()) {
-          alert("Inserisci un testo o carica uno screenshot");
-          return;
-        }
-
-        const payload = { inputText: finalInput, tone, language };
-
-        try {
-          const res = await fetch("/api/generate", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-          });
-
-          const data = await res.json();
-
-          const container = document.getElementById("outputContainer");
-          container.innerHTML = "";
-
-          if (data.output) {
-            const responses = data.output.split(/\n+/).filter(r => r.trim() !== "");
-            responses.forEach(resp => {
-              const box = document.createElement("div");
-              box.className = "responseBox";
-              box.innerHTML = `<span>${resp}</span><button class='copyBtn' onclick='navigator.clipboard.writeText(\"${resp.replace(/\"/g, "\\\"")}\")'>📋 Copia</button>`;
-              container.appendChild(box);
-            });
-          } else {
-            container.textContent = "Nessuna risposta generata.";
-          }
-        } catch (err) {
-          document.getElementById("outputContainer").textContent = "Errore: " + err.message;
-        }
-      }
+      document.getElementById("intro").innerHTML = t.intro;
+      document.getElementById("inputText").placeholder = t.placeholder;
+      document.getElementById("generateBtn").textContent = t.button;
+      document.getElementById("privacyText").textContent = t.privacy;
     </script>
   </body>
 </html>
