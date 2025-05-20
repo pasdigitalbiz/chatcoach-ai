@@ -107,20 +107,8 @@
     <textarea id="inputText" rows="4"></textarea>
     <input type="file" id="imageUpload" accept="image/*" />
 
-    <select id="tone">
-      <option value="Divertente">😄 Divertente</option>
-      <option value="Romantico">💘 Romantico</option>
-      <option value="Sicuro di sé">💪 Sicuro di sé</option>
-      <option value="Malizioso">😏 Malizioso</option>
-    </select>
-
-    <select id="language">
-      <option value="Italiano">🇮🇹Italiano</option>
-      <option value="Inglese">🇬🇧Inglese</option>
-      <option value="Francese">🇫🇷Francese</option>
-      <option value="Tedesco">🇩🇪Tedesco</option>
-      <option value="Spagnolo">🇪🇸Spagnolo</option>
-    </select>
+    <select id="tone"></select>
+    <select id="language"></select>
 
     <div style="margin-top: 1rem; font-size: 0.9rem;">
       <label>
@@ -139,41 +127,68 @@
           intro: "💬 Hai un match ma non sai come rispondere?<br>Dating Buddy ti aiuta a scrivere messaggi brillanti, naturali e pronti all’uso.<br>Puoi anche caricare uno screenshot per ricevere consigli su misura.",
           placeholder: "Scrivi qui il messaggio ricevuto o carica uno screenshot...",
           button: "Cosa rispondo?",
-          privacy: "Ho letto e accetto la"
+          privacy: "Ho letto e accetto la",
+          tones: ["😄 Divertente", "💘 Romantico", "💪 Sicuro di sé", "😏 Malizioso"],
+          languages: ["🇮🇹 Italiano", "🇬🇧 Inglese", "🇫🇷 Francese", "🇩🇪 Tedesco", "🇪🇸 Spagnolo"]
         },
         en: {
           intro: "💬 Got a match but don’t know what to say?<br>Dating Buddy helps you craft clever, natural, ready-to-send replies.<br>You can also upload a screenshot for tailored advice.",
           placeholder: "Write here the message you received or upload a screenshot...",
           button: "What should I reply?",
-          privacy: "I have read and accept the"
+          privacy: "I have read and accept the",
+          tones: ["😄 Funny", "💘 Romantic", "💪 Confident", "😏 Flirty"],
+          languages: ["🇬🇧 English", "🇮🇹 Italian", "🇫🇷 French", "🇩🇪 German", "🇪🇸 Spanish"]
         },
         fr: {
           intro: "💬 Un match et tu ne sais pas quoi répondre ?<br>Dating Buddy t’aide à rédiger des réponses brillantes et naturelles.<br>Tu peux aussi envoyer une capture d’écran pour un conseil personnalisé.",
           placeholder: "Écris ici le message reçu ou télécharge une capture d’écran...",
           button: "Que répondre ?",
-          privacy: "J’ai lu et j’accepte la"
+          privacy: "J’ai lu et j’accepte la",
+          tones: ["😄 Drôle", "💘 Romantique", "💪 Confiant", "😏 Séducteur"],
+          languages: ["🇫🇷 Français", "🇮🇹 Italien", "🇬🇧 Anglais", "🇩🇪 Allemand", "🇪🇸 Espagnol"]
         },
         de: {
           intro: "💬 Du hast ein Match, aber weißt nicht, was du schreiben sollst?<br>Dating Buddy hilft dir, clevere und natürliche Antworten zu schreiben.<br>Du kannst auch einen Screenshot hochladen für maßgeschneiderte Tipps.",
           placeholder: "Schreib hier die Nachricht oder lade einen Screenshot hoch...",
           button: "Was soll ich antworten?",
-          privacy: "Ich habe die gelesen und akzeptiere die"
+          privacy: "Ich habe die gelesen und akzeptiere die",
+          tones: ["😄 Lustig", "💘 Romantisch", "💪 Selbstbewusst", "😏 Anzüglich"],
+          languages: ["🇩🇪 Deutsch", "🇮🇹 Italienisch", "🇬🇧 Englisch", "🇫🇷 Französisch", "🇪🇸 Spanisch"]
         },
         es: {
           intro: "💬 ¿Tienes un match y no sabes qué responder?<br>Dating Buddy te ayuda a crear mensajes naturales y listos para usar.<br>También puedes subir una captura de pantalla para recibir consejos personalizados.",
           placeholder: "Escribe aquí el mensaje recibido o sube una captura de pantalla...",
           button: "¿Qué respondo?",
-          privacy: "He leído y acepto la"
+          privacy: "He leído y acepto la",
+          tones: ["😄 Divertido", "💘 Romántico", "💪 Seguro de sí", "😏 Atrevido"],
+          languages: ["🇪🇸 Español", "🇮🇹 Italiano", "🇬🇧 Inglés", "🇫🇷 Francés", "🇩🇪 Alemán"]
         }
       };
 
-      const lang = navigator.language.slice(0,2);
+      const lang = navigator.language.slice(0, 2);
       const t = translations[lang] || translations.en;
 
       document.getElementById("intro").innerHTML = t.intro;
       document.getElementById("inputText").placeholder = t.placeholder;
       document.getElementById("generateBtn").textContent = t.button;
       document.getElementById("privacyText").textContent = t.privacy;
+
+      const toneSelect = document.getElementById("tone");
+      t.tones.forEach((tone, i) => {
+        const option = document.createElement("option");
+        option.value = ["Divertente", "Romantico", "Sicuro di sé", "Malizioso"][i];
+        option.textContent = tone;
+        toneSelect.appendChild(option);
+      });
+
+      const langSelect = document.getElementById("language");
+      langSelect.innerHTML = "";
+      t.languages.forEach((l, i) => {
+        const opt = document.createElement("option");
+        opt.textContent = l;
+        opt.value = ["Italiano", "Inglese", "Francese", "Tedesco", "Spagnolo"][i];
+        langSelect.appendChild(opt);
+      });
     </script>
   </body>
 </html>
