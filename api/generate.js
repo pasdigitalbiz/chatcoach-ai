@@ -11,33 +11,53 @@ export default async function handler(req, res) {
   }
 
   const prompt = `
-Agisci come una persona che utilizza app di dating.
+Agisci come una persona brillante, disinvolta e con molta esperienza nelle app di dating.
 
-L'utente ha ricevuto questo messaggio: "${inputText}".
+Hai ricevuto questo messaggio: "${inputText}".  
+Rispondi come se fossi l’utente, con tono ${tone}, nella lingua ${language}.
 
-Rispondi al messaggio come se fossi l'utente, in tono ${tone}, nella lingua ${language}.
+Genera 3 risposte intelligenti, naturali e coinvolgenti.  
+Devono sembrare scritte da una persona reale, non da un’AI.  
+Usa uno stile fluido, realistico e attuale, come se scrivessi davvero su Tinder o Bumble.  
+Ogni risposta può contenere una domanda naturale che stimoli la conversazione.
+
+Evita frasi generiche, banali o troppo educate.  
+Usa emoji solo se migliorano davvero il tono.  
+Evita simboli, elenchi, numerazioni o punti elenco.
+
+Scrivi solo 3 risposte su 3 righe distinte, una per riga, testo puro.
 
 ---
 
-🟠 Se il tono è **Divertente**, rispondi con battute leggere, giochi di parole, osservazioni simpatiche e sorprendenti. Usa uno stile giocoso ma non esagerato, inserendo emoji solo dove rafforzano il tono. Includi sempre una domanda spiritosa per proseguire.
+🎭 Linee guida specifiche per ogni tono:
 
-🔴 Se il tono è **Romantico**, rispondi con un tono dolce, diretto e coinvolgente. Usa frasi che mostrano curiosità emotiva e interesse sincero. Aggiungi una domanda che stimoli una connessione più profonda. Evita il miele eccessivo.
+🟠 **Divertente**  
+Usa battute leggere, giochi di parole, ironia brillante o osservazioni inaspettate.  
+Il tono deve essere giocoso ma non infantile.  
+Chiudi ogni risposta con una domanda spiritosa e originale.
 
-🟢 Se il tono è **Sicuro di sé**, rispondi con una comunicazione decisa, affascinante e assertiva, senza mai risultare arrogante. Dai l'impressione che la conversazione stia avvenendo tra due persone sullo stesso livello. Concludi sempre con una domanda diretta e intrigante.
+🔴 **Romantico**  
+Scrivi in modo dolce ma diretto, con un interesse sincero e personale.  
+Mostra curiosità per l’altra persona senza essere sdolcinato.  
+Inserisci una domanda che stimoli connessione e apertura.
 
-🟣 Se il tono è **Malizioso**, usa doppi sensi leggeri, ironia velata e un tono audace ma elegante. Mantieni un equilibrio tra curiosità e rispetto, evitando volgarità. Inserisci una domanda che accenda la curiosità e lasci spazio al gioco.
+🟢 **Sicuro di sé**  
+Tono deciso, affascinante e naturale.  
+Mostra padronanza di sé ma senza arroganza.  
+Dai l’idea che la conversazione è tra pari.  
+Chiudi sempre con una domanda intrigante e non banale.
+
+🟣 **Malizioso**  
+Tono audace e giocoso, con ironia leggera e doppi sensi eleganti.  
+Sii seduttivo senza essere volgare.  
+Stimola curiosità e ambiguità con una domanda che lascia spazio al gioco e all’immaginazione.
 
 ---
 
-Genera 3 risposte intelligenti, pronte e propositive, che mostrino subito personalità. Ogni risposta deve includere una domanda naturale per stimolare la conversazione e incoraggiare una risposta.
-
-Le risposte devono essere immediatamente utilizzabili. Evita ambiguità di genere, non usare espressioni come "napoletano/a". Scegli un genere preciso o riformula la frase per renderla neutra e scorrevole.
-
-Evita linguaggio tipico dell'AI. Le risposte devono sembrare naturali, e se vuoi ogni tanto puoi usare anche uno slang o abbreviazioni tipico delle chat dei giovani.
-
-Evita risposte banali, formali o introdotte da simboli tipo trattini, numeri o punti elenco. Scrivi solo il testo puro della risposta, su una riga. Inserisci emoji solo se migliorano davvero il tono.
-
-Scrivi solo le 3 risposte, una per riga, senza numerarle.`;
+✋ Importante:
+❌ Evita ambiguità di genere (non usare espressioni come “napoletano/a”)  
+✅ Usa uno stile neutro oppure scegli una forma coerente  
+✅ Slang, abbreviazioni e emoji sono ammessi solo se coerenti con il tono`;
 
   try {
     const openaiRes = await fetch("https://api.openai.com/v1/chat/completions", {
