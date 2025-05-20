@@ -290,5 +290,105 @@
         langSelect.appendChild(opt);
       });
     </script>
+    <script>
+  let isBlocked = false;
+  let requestTimestamps = JSON.parse(localStorage.getItem("generationTimestamps")) || [];
+
+  const errorMessages = {
+    it: "Per favore, accetta la Privacy Policy.",
+    en: "Please accept the Privacy Policy.",
+    fr: "Veuillez accepter la politique de confidentialité.",
+    de: "Bitte akzeptiere die Datenschutzrichtlinie.",
+    es: "Por favor, acepta la política de privacidad."
+  };
+
+  function checkSpamAndSetBlock() {
+    const now = Date.now();
+    requestTimestamps = requestTimestamps.filter(t => now - t < 30000);
+    if (requestTimestamps.length >= 3) {
+      isBlocked = true;
+      alert("Troppo veloce! Attendi 1 minuto.");
+      document.getElementById("generateBtn").disabled = true;
+      setTimeout(() => {
+        isBlocked = false;
+        document.getElementById("generateBtn").disabled = false;
+      }, 60000);
+      return true;
+    }
+    requestTimestamps.push(now);
+    localStorage.setItem("generationTimestamps", JSON.stringify(requestTimestamps));
+    return false;
+  }
+
+  async function extractTextFromImage(file) {
+    const formData = new FormData();
+    formData.append("file", file);
+    const res = await fetch("https://api.ocr.space/parse/image", {
+      method: "POST",
+      headers: { apikey: "helloworld" },
+      body: formData
+    });
+    const data = await res.json();
+    return data.ParsedResults?.[0]?.ParsedText || "";
+  }
+
+  async function generateResponse() {
+    if (isBlocked) return alert("Attendi ancora qualche secondo.");
+
+    if (!document.getElementById("privacyCheckbox").checked) {
+      alert(errorMessages[lang] || errorMessages["en"]);
+      return;
+    }
+
+    if (checkSpamAndSetBlock()) return;
+
+    const inputText = document.getElementById("inputText").value;
+    const tone = document.getElementById("tone").value;
+    const language = document.getElementById("language").value;
+    const image = document.getElementById("imageUpload").files[0];
+
+    let finalInput = inputText;
+    if (image) {
+      const extractedText = await extractTextFromImage(image);
+      finalInput = inputText + "\n" + extractedText;
+    }
+
+    if (!finalInput.trim()) {
+      alert("Inserisci un testo o screenshot.");
+      return;
+    }
+
+    const payload = { inputText: finalInput, tone, language };
+
+    try {
+      const res = await fetch("/api/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+      const container = document.getElementById("outputContainer");
+      container.innerHTML = "";
+
+      if (data.output) {
+        const responses = data.output.split(/\n+/).filter(r => r.trim());
+        responses.forEach(resp => {
+          const box = document.createElement("div");
+          box.className = "responseBox";
+          box.innerHTML = `
+            <span>${resp}</span>
+            <button class="copyBtn" onclick='navigator.clipboard.writeText(\`${resp.replace(/`/g, "\\`")}\`)'>📋 Copia</button>`;
+          container.appendChild(box);
+        });
+      } else {
+        container.textContent = "Nessuna risposta generata.";
+      }
+    } catch (err) {
+      document.getElementById("outputContainer").textContent = "Errore: " + err.message;
+    }
+  }
+</script>
+
   </body>
 </html>
