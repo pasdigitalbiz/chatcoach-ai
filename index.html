@@ -297,43 +297,24 @@
       const container = document.getElementById("outputContainer");
       container.innerHTML = "";
 
-   if (data.output) {
-  const responses = data.output.split(/\n+/).filter(r => r.trim());
-  responses.forEach((resp, i) => {
-    const box = document.createElement("div");
-    box.className = "responseBox";
-    box.innerHTML = `
-      <span>${resp}</span>
-      <button class="copyBtn" onclick='navigator.clipboard.writeText(\`${resp.replace(/`/g, "\\`")}\`)'>📋 Copia</button>`;
-    container.appendChild(box);
+  if (data.output) {
+        const responses = data.output.split(/\n+/).filter(r => r.trim());
+        responses.forEach(resp => {
+          const box = document.createElement("div");
+          box.className = "responseBox";
+          box.innerHTML = 
+            <span>${resp}</span>
+            <button class="copyBtn" onclick='navigator.clipboard.writeText(\${resp.replace(//g, "\\")}\)'>📋 Copia</button>;
+          container.appendChild(box);
 
-    if (i === 1) {
-      const adContainer = document.createElement("div");
-      adContainer.style.display = "flex";
-      adContainer.style.justifyContent = "center";
-      adContainer.style.margin = "1rem 0";
-
-      const script1 = document.createElement("script");
-      script1.innerHTML = `
-        atOptions = {
-          'key': 'f708fcea40e818d804fa27cace971ea3',
-          'format': 'iframe',
-          'height': 50,
-          'width': 320,
-          'params': {}
-        };
-      `;
-
-      const script2 = document.createElement("script");
-      script2.src = "//www.highperformanceformat.com/f708fcea40e818d804fa27cace971ea3/invoke.js";
-
-      adContainer.appendChild(script1);
-      adContainer.appendChild(script2);
-      container.appendChild(adContainer);
+        });
+      } else {
+        container.textContent = "Nessuna risposta generata.";
+      }
+    } catch (err) {
+      document.getElementById("outputContainer").textContent = "Errore: " + err.message;
     }
-  });
-}
-
+  }
 </script>
 </body>
 </html>
