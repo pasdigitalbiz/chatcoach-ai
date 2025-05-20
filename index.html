@@ -121,7 +121,8 @@
 </div>
   
   <input type="file" id="imageUpload" accept="image/*" />
-  
+  <button id="removeImageBtn" onclick="removeImage()" style="display:none; margin-top: 0.5rem;">🗑️ Remove</button>
+
   <select id="tone"></select>
   <select id="language"></select>
 
@@ -336,6 +337,17 @@
       document.getElementById("outputContainer").textContent = "Errore: " + err.message;
     }
   }
+    document.getElementById("imageUpload").addEventListener("change", function () {
+    const file = this.files[0];
+    document.getElementById("removeImageBtn").style.display = file ? "block" : "none";
+  });
+
+  function removeImage() {
+    const input = document.getElementById("imageUpload");
+    input.value = "";
+    document.getElementById("removeImageBtn").style.display = "none";
+  }
+
 </script>
 </body>
 </html>
