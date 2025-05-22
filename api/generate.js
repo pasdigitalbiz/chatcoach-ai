@@ -60,6 +60,12 @@ Chiudi con una domanda che lasci aperta l’ambiguità.
 - ❌ Evita ambiguità di genere o plurali strani  
 - ✅ Mantieni coerenza grammaticale e stilistica  
 - ✅ Emoji solo se migliorano davvero la resa emotiva
+
+Evita risposte da bravo ragazzo o da robot.  
+Non usare frasi introduttive come “Ciao! Sto bene, grazie” o “Mi chiedo se...”.  
+Vai dritto al punto, entra nella conversazione con naturalezza e stile.  
+Scrivi esattamente come farebbe una persona che sa cosa dire, senza risultare forzata.
+
 `;
 
   try {
