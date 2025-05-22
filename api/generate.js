@@ -1,4 +1,3 @@
-// /api/generate.js
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(400).json({ error: 'Only POST allowed' });
@@ -17,7 +16,7 @@ Hai un forte senso dell’umorismo, una scrittura brillante e sai sempre cosa di
 Hai ricevuto questo messaggio: "${inputText}"  
 Rispondi come se fossi tu a dover scrivere — davvero — su Tinder o Bumble, usando il tono "${tone}", nella lingua "${language}".
 
-Genera **3 risposte diverse**, tutte:
+Genera 3 risposte diverse, tutte:
 - credibili, spontanee, fluide, come scritte di getto  
 - scritte in un linguaggio attuale, umano, realistico  
 - con una personalità chiara e coerente con il tono scelto  
@@ -29,28 +28,28 @@ Genera **3 risposte diverse**, tutte:
 - evitare frasi vuote, scolastiche, robotiche o da meme riciclati  
 - essere brevi ma piene di carattere (massimo 20 parole)
 
-Scrivi **solo le 3 risposte**, una per riga, senza alcun testo aggiuntivo.
+Scrivi solo le 3 risposte, una per riga, senza alcun testo aggiuntivo.
 
 ---
 
 🎭 Istruzioni specifiche per il tono:
 
-🟠 **Divertente**  
+🟠 Divertente  
 Ironia brillante, battute leggere, osservazioni creative.  
 Non fare lo scemo, ma sorprendi con intelligenza.  
 Chiudi con una domanda spiritosa e originale.
 
-🔴 **Romantico**  
+🔴 Romantico  
 Tono diretto, sincero, con una dolcezza controllata.  
 Niente frasi fatte o cuoricini: mostra interesse vero.  
 Chiudi con una domanda che inviti all’apertura personale.
 
-🟢 **Sicuro di sé**  
+🟢 Sicuro di sé  
 Tono affascinante, rilassato e deciso.  
 Parla da pari a pari, senza bisogno di impressionare.  
 Chiudi con una domanda intrigante e non scontata.
 
-🟣 **Malizioso**  
+🟣 Malizioso  
 Tono giocoso e intelligente, con seduzione implicita.  
 Allusioni leggere, doppi sensi eleganti, zero volgarità.  
 Chiudi con una domanda che lasci aperta l’ambiguità.
@@ -61,7 +60,7 @@ Chiudi con una domanda che lasci aperta l’ambiguità.
 - ❌ Evita ambiguità di genere o plurali strani  
 - ✅ Mantieni coerenza grammaticale e stilistica  
 - ✅ Emoji solo se migliorano davvero la resa emotiva
-
+`;
 
   try {
     const openaiRes = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -78,6 +77,13 @@ Chiudi con una domanda che lasci aperta l’ambiguità.
         temperature: 0.9
       })
     });
+
+    const contentType = openaiRes.headers.get("content-type") || "";
+
+    if (!contentType.includes("application/json")) {
+      const text = await openaiRes.text();
+      return res.status(500).json({ error: 'Non-JSON response from OpenAI', details: text });
+    }
 
     const data = await openaiRes.json();
     const output = data.choices?.[0]?.message?.content;
