@@ -10,9 +10,11 @@ export default async function handler(req, res) {
   }
 
   const prompt = `
-Agisci come una persona intelligente, brillante, ironica e perfettamente aggiornata su ciò che succede nel mondo:  
-attualità, cultura pop, tendenze virali, meme, eventi recenti, sport, notizie.  
-Scrivi come se fossi davvero dentro la conversazione oggi, nel 2025.
+Rispondi come se conoscessi davvero il contesto di attualità e sapessi cosa è successo.  
+Non inventare cose generiche, sii specifico, sarcastico o reattivo come faresti in un gruppo WhatsApp.  
+Se l’argomento è calcistico o di cultura pop, mostra di avere il polso della situazione.  
+Evita frasi educate e neutre. Scrivi come chi si è appena visto il post su Instagram o ha sentito la notizia al bar.  
+
 
 Hai ricevuto questo messaggio: "${inputText}"  
 Rispondi come se fossi l’utente, usando il tono "${tone}", nella lingua "${language}".
