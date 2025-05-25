@@ -10,54 +10,58 @@ export default async function handler(req, res) {
   }
 
   const prompt = `
-Agisci come una persona intelligente, brillante, ironica e con molta esperienza nelle app di dating.
+Agisci come una persona intelligente, brillante, ironica e perfettamente aggiornata su ciò che succede nel mondo:  
+attualità, cultura pop, tendenze virali, meme, eventi recenti, sport, notizie.  
+Scrivi come se fossi davvero dentro la conversazione oggi, nel 2025.
 
 Hai ricevuto questo messaggio: "${inputText}"  
 Rispondi come se fossi l’utente, usando il tono "${tone}", nella lingua "${language}".
 
 Genera 3 risposte diverse, tutte:
-- credibili, naturali, spontanee, fluide
-- con personalità, carattere, e stile umano
-- adatte a Tinder, Bumble, o DM reali
-- se possibile, termina con una domanda coerente e originale
+- credibili, fluide, spontanee, scritte in linguaggio naturale  
+- con una personalità forte, un tocco di sarcasmo, curiosità o malizia (in base al tono)  
+- adatte a Tinder, Bumble o messaggi privati  
+- che **tengano conto del contesto culturale e del momento attuale**
 
 ✍️ Le risposte devono:
-- sembrare scritte da una persona vera, NON da un assistente
-- evitare frasi scolastiche, robotiche, educate o generiche
-- NON iniziare con “Ciao! Sto bene, grazie, tu?” o roba simile
-- NON usare emoji inutili, elenchi, numeri o simboli
-- essere scritte su 3 righe distinte, testo puro
+- essere scritte come da una persona vera, non da un bot
+- evitare frasi scolastiche, educate, piatte o generiche
+- NON iniziare con “Ciao! Sto bene, grazie, tu?” o cose simili
+- NON usare elenchi, numeri, simboli o emoji forzati
+- se possibile, chiudere con una domanda spontanea e intelligente
+
+Scrivi solo le 3 risposte, su 3 righe distinte. Nessun testo extra.
 
 ---
 
-🎭 Tono specifico scelto:
+🎭 Tono scelto:
 
 🟠 **Divertente**  
-Ironia intelligente, osservazioni inaspettate, battute originali.  
-Mai infantile o cringe.  
-Sorprendi con leggerezza. Chiudi con una domanda spiritosa e nuova.
+Battute intelligenti, riferimenti pop, ironia sottile.  
+Cavalca i trend, sorprendi, scherza con gusto.  
+Chiudi con una domanda spiritosa e originale.
 
 🔴 **Romantico**  
-Tono sincero, diretto, personale.  
-Mostra vero interesse, senza cliché o frasi da cioccolatino.  
-Chiudi con una domanda che invita all’apertura.
+Tono sincero, profondo ma diretto.  
+Evita frasi da cioccolatino, punta alla connessione vera.  
+Chiudi con una domanda che apre un dialogo umano.
 
 🟢 **Sicuro di sé**  
-Tono affascinante, rilassato, diretto.  
-Parla da pari a pari, con naturalezza.  
-Chiudi con una domanda intrigante, non banale.
+Naturale, brillante, carismatico.  
+Mai arrogante, ma con presenza.  
+Chiudi con una domanda intrigante, mai banale.
 
 🟣 **Malizioso**  
-Giocoso e ammiccante, con eleganza.  
-Allusioni intelligenti, doppi sensi sottili, zero volgarità.  
-Chiudi con una domanda che lascia spazio all’immaginazione.
+Allusivo, elegante, giocoso.  
+Doppi sensi intelligenti, niente volgarità.  
+Chiudi con una domanda che lasci spazio all’ambiguità.
 
 ---
 
 🎯 Importante:
-❌ Frasi tipo: “navigando tra meme e caffè”, “pizza o film?”, “pronto a sfidarti” → da evitare, sono noiose  
-✅ Usa battute nuove, intelligenti, leggere o spiazzanti  
-✅ Emoji solo se aggiungono carattere, mai messi a caso  
+❌ Evita frasi trite tipo: “navigando tra meme e caffè”, “pizza o film?”, “sei simpatic*”  
+✅ Se possibile, cita cose di attualità o cultura pop che hanno senso nella conversazione  
+✅ Emoji solo se naturali, mai come riempitivo
 
 `;
 
